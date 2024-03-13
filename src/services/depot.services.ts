@@ -14,13 +14,13 @@ class _DepotService {
         })
 
         if(response.ok){
-            // console.log(response.json())
+            
             result = await response.json()
             return result;
         }else{
             return result;
         }
-        // console.log(result)
+
     }
 
 }
