@@ -2,7 +2,7 @@ import { DepotModel } from "../models/depot.model";
 
 class _DepotService {
 
-    async getDepot(): DepotModel[] {
+    async getDepot(): Promise<DepotModel[]> {
 
         var result : DepotModel[]= [];
 
@@ -20,9 +20,7 @@ class _DepotService {
         }else{
             return result;
         }
-        
         // console.log(result)
-
     }
 
 }

@@ -1,4 +1,5 @@
 export interface DepotModel {
+    ordre: number
     depot_id: number,
     jardin_id: number,
     depot: string,
