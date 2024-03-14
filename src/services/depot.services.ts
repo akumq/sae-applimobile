@@ -13,8 +13,7 @@ class _DepotService {
             },
         })
 
-        if(response.ok){
-            
+        if(response.ok){ 
             result = await response.json()
             return result;
         }else{
