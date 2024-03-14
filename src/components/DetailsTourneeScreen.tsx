@@ -14,7 +14,7 @@ type DetailsTourneeScreenProps = {
 }
 
 export function DetailsTourneeScreen({ route, navigation }: DetailsTourneeScreenProps) {
-  const tournee_id = route.params.tourneeId
+  const tournee_id = route.params.tourneeId;
   const [tournee_details, setTourneeDetails] = useState<TourneeModelDetails | null>(null);
   const [distributions,setDistributions] = useState<DistributionModel[]>([]);
 
@@ -38,7 +38,13 @@ export function DetailsTourneeScreen({ route, navigation }: DetailsTourneeScreen
   }
 
   const NavigateQrCode = (args: ItemEventData) => {
-    navigation.navigate('QRCodeScreen');
+    const index = args.index;
+    console.log(index)
+    const ndistri : DistributionModel = distributions[index];
+    navigation.navigate('QRCodeScreen', {
+      tourneeId: tournee_id,
+      distributionsId: ndistri.distribution_id,
+    })
   }
 
   const distributionCellFactory = (distribution: DistributionModel) => {

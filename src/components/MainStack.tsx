@@ -7,6 +7,7 @@ import { DetailsTourneeScreen } from './DetailsTourneeScreen';
 import { TourneeService } from '../services/tournee.services';
 import { TourneeModel } from '../models/tournee.model';
 import { QRCodeScreen } from './QRCodeScreen';
+import { PanierValiderScreen } from './PanierValiderScreen';
 
 const StackNavigator = stackNavigatorFactory();
 
@@ -38,6 +39,11 @@ export const MainStack = () => {
                <StackNavigator.Screen
                     name="QRCodeScreen"
                     component={QRCodeScreen}
+                />
+
+                <StackNavigator.Screen
+                    name="PanierValiderScreen"
+                    component={PanierValiderScreen}
                 />
  
                 

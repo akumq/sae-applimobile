@@ -11,6 +11,7 @@ import { DepotService } from '../services/depot.services';
 import { useEffect, useState } from "react";
 import { TourneeModel } from '../models/tournee.model';
 import { TourneeService } from '../services/tournee.services';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
 
 type HomeScreenProps = {
     route: RouteProp<MainStackParamList, "HomeScreen">,
@@ -20,7 +21,7 @@ type HomeScreenProps = {
 export function HomeScreen({ navigation }: HomeScreenProps) {
     const [depots, setDepots] = useState<DepotModel[]>([]);
     const [tournee, setTournee] = useState<TourneeModel[]>([]);
-
+    const barcodeScanner = new BarcodeScanner();
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -43,13 +44,38 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     }, []);
 
     const onItemTap = (args: ItemEventData) => {
-      const index = args.index
-      const ntournee : TourneeModel = tournee[index]
+      const tourneeid = args.object.get("data-index");
       navigation.navigate('DetailsTourneeScreen', {
-        tourneeId: ntournee.tournee_id,
+        tourneeId: tourneeid,
       })
     }
 
+    const handleEndTourneeButton = async (args: ItemEventData) => {
+      const tourneeid = args.object.get("data-index"); 
+      console.log(tourneeid)
+      try {
+        const result = await barcodeScanner.scan({
+          formats: "QR_CODE",
+          message: "Veuillez scanner le QR code de fin de tournée",
+          preferFrontCamera: false,
+          showFlipCameraButton: true,
+          showTorchButton: true,
+          torchOn: false,
+          resultDisplayDuration: 500,
+          openSettingsIfPermissionWasPreviouslyDenied: true
+        });
+        
+        if (result.text === "DEPOT:3") {
+          const updatedTournee = tournee.filter(t => t.tournee_id !== tourneeid);
+          setTournee(updatedTournee);
+          console.log("Fin de tournée détectée !");
+        } else {
+          console.log("QR code non valide");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la numérisation du QR code :", error);
+      }
+    };
 
     const depotFactory = (depot: DepotModel) => {
         return <label text={depot.adresse} />
@@ -57,43 +83,49 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
 
     const tourneeFactory = (tournee: TourneeModel) =>{
       return  (
-        <gridLayout
+        <stackLayout
           height="280"
           borderRadius="10"
           className="bg-secondary"
-          rows="auto, auto"
-          columns="auto, *"
           margin="5 10"
           padding="10"
         >
           <label
-            row="0"
-            col="0"
-            width="10"
+            width="50"
             height="10"
             backgroundColor={tournee.couleur}
-            borderRadius="5"
+            borderRadius="6"
           />
           <label
-            row="0"
-            col="1"
-            margin="0"
             fontWeight="700"
             className="text-primary"
             fontSize="18"
             text={tournee.ordre.toString()}
           />
           <label
-            row="1"
-            col="0"
-            colSpan="2"
             margin="0"
             className="text-secondary"
             fontSize="14"
             textWrap="true"
             text={tournee.tournee}
           />
-        </gridLayout>
+           <button
+            margin="0"
+            className="text-secondary"
+            fontSize="12"
+            data-index={tournee.tournee_id}
+            text={"Fin de Tournée"}
+            onTap={handleEndTourneeButton}
+          />
+          <button
+            margin="0"
+            className="text-secondary"
+            fontSize="12"
+            data-index={tournee.tournee_id}
+            text={"Details Tournée"}
+            onTap={onItemTap}
+          />
+        </stackLayout>
       );
     }
 

@@ -36,10 +36,9 @@ class _QRCodeService {
             showTorchButton: true, // Bouton pour allumer/éteindre la lampe torche
             torchOn: false, // Par défaut, la lampe torche est éteinte
             orientation: "portrait", // Orientation de la caméra (portrait ou paysage)
-            resultDisplayDuration: 0, // Durée d'affichage du résultat (0 pour désactiver)
+            resultDisplayDuration: 5000, // Durée d'affichage du résultat (0 pour désactiver)
             openSettingsIfPermissionWasPreviouslyDenied: true // Demande d'ouverture des paramètres si l'autorisation a été précédemment refusée
         }).then((result) => {
-            // Succès du scan, affichage du résultat
             alert({
                 title: "Résultat du scan",
                 message: "Format: " + result.format + ",\nValeur: " + result.text,
