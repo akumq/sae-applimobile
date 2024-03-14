@@ -3,14 +3,14 @@ import { RouteProp } from '@react-navigation/core'
 import { FrameNavigationProp } from 'react-nativescript-navigation'
 import { MainStackParamList } from './NavigationParamList'
 import { TourneeService } from '../services/tournee.services'
-import { TourneeModelDetails, DistributionModel } from '../models/tournee.model'
+import { TourneeModelDetails, DistributionModel, LivraisonModel } from '../models/tournee.model'
 import { ListView } from 'react-nativescript'
 import { useEffect, useState } from "react";
 import { Button, ItemEventData} from '@nativescript/core'
 
 type DetailsTourneeScreenProps = {
-  route: RouteProp<MainStackParamList, 'DetailsTournee'>
-  navigation: FrameNavigationProp<MainStackParamList, 'DetailsTournee'>
+  route: RouteProp<MainStackParamList, 'DetailsTourneeScreen'>
+  navigation: FrameNavigationProp<MainStackParamList, 'DetailsTourneeScreen'>
 }
 
 export function DetailsTourneeScreen({ route, navigation }: DetailsTourneeScreenProps) {
@@ -33,17 +33,29 @@ export function DetailsTourneeScreen({ route, navigation }: DetailsTourneeScreen
     fetchData();
   }, []); // Mettre à jour les données lorsque tournee_id ou forceRerender changent
 
-  const onItemTap = (args: ItemEventData) => {
-    navigation.navigate('Tournee');
+  const NavigateTournee = (args: ItemEventData) => {
+    navigation.navigate('HomeScreen');
   }
 
+  const NavigateQrCode = (args: ItemEventData) => {
+    navigation.navigate('QRCodeScreen');
+  }
 
   const distributionCellFactory = (distribution: DistributionModel) => {
-    console.log(distribution)
     return (
-      <label text={distribution.adresse} />
+        <stackLayout style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+            <label text={`Adresse: ${distribution.adresse}`} fontSize="16" />
+            <label text={`Code Postal: ${distribution.codepostal}`} fontSize="16" />
+            <label text={`Ville: ${distribution.ville}`} fontSize="16" />
+            <label text={`Capacité: ${distribution.capacite}`} fontSize="16" />
+            <stackLayout>
+                {distribution.livraisons.map((livraison, index) => (
+                    <label key={index} text={`${livraison.count} | ${livraison.panier}`} fontSize="12" />
+                ))}
+            </stackLayout>
+        </stackLayout>
     );
-  };
+};
 
   return (
     <stackLayout height="100%">
@@ -51,12 +63,12 @@ export function DetailsTourneeScreen({ route, navigation }: DetailsTourneeScreen
         fontSize="35"
         textWrap="true"
         text='◀'
-        onTap={onItemTap}
+        onTap={NavigateTournee}
       />
       {tournee_details ? (
         <ListView
           items={distributions}
-          onItemTap={onItemTap}
+          onItemTap={NavigateQrCode}
           cellFactory={distributionCellFactory}
           separatorColor="transparent"
           height="100%"

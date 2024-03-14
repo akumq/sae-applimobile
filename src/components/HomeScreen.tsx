@@ -11,11 +11,10 @@ import { DepotService } from '../services/depot.services';
 import { useEffect, useState } from "react";
 import { TourneeModel } from '../models/tournee.model';
 import { TourneeService } from '../services/tournee.services';
-import { View } from '@nativescript/core';
 
 type HomeScreenProps = {
-    route: RouteProp<MainStackParamList, "One">,
-    navigation: FrameNavigationProp<MainStackParamList, "One">,
+    route: RouteProp<MainStackParamList, "HomeScreen">,
+    navigation: FrameNavigationProp<MainStackParamList, "HomeScreen">,
 };
 
 export function HomeScreen({ navigation }: HomeScreenProps) {
@@ -46,7 +45,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     const onItemTap = (args: ItemEventData) => {
       const index = args.index
       const ntournee : TourneeModel = tournee[index]
-      navigation.navigate('Details', {
+      navigation.navigate('DetailsTourneeScreen', {
         tourneeId: ntournee.tournee_id,
       })
     }
@@ -59,30 +58,43 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     const tourneeFactory = (tournee: TourneeModel) =>{
       return  (
         <gridLayout
-        height="280"
-        borderRadius="10"
-        className="bg-secondary"
-        rows="*, auto, auto"
-        columns="*"
-        margin="5 10"
-        padding="0"
+          height="280"
+          borderRadius="10"
+          className="bg-secondary"
+          rows="auto, auto"
+          columns="auto, *"
+          margin="5 10"
+          padding="10"
         >
-          <label row="1"
-          margin="10 10 0 10"
-          fontWeight="700"
-          className="text-primary"
-          fontSize="18" 
-          text={tournee.ordre.toString()}/>
-
-          <label 
-          row="2"
-          margin="0 10 10 10"
-          className="text-secondary"
-          fontSize="14"
-          textWrap="true"
-          text={tournee.tournee} />
+          <label
+            row="0"
+            col="0"
+            width="10"
+            height="10"
+            backgroundColor={tournee.couleur}
+            borderRadius="5"
+          />
+          <label
+            row="0"
+            col="1"
+            margin="0"
+            fontWeight="700"
+            className="text-primary"
+            fontSize="18"
+            text={tournee.ordre.toString()}
+          />
+          <label
+            row="1"
+            col="0"
+            colSpan="2"
+            margin="0"
+            className="text-secondary"
+            fontSize="14"
+            textWrap="true"
+            text={tournee.tournee}
+          />
         </gridLayout>
-      )
+      );
     }
 
     return (

@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@nativescript/camera": "^5.1.1",
     "@nativescript/core": "~8.6.0",
     "react": "^18.2.0",
     "react-nativescript": "^5.0.0",

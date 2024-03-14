@@ -3,9 +3,10 @@ import * as React from "react";
 import { stackNavigatorFactory } from "react-nativescript-navigation";
 
 import { HomeScreen } from './HomeScreen';
-import { DetailsTourneeScreen } from './TourneeScreen';
+import { DetailsTourneeScreen } from './DetailsTourneeScreen';
 import { TourneeService } from '../services/tournee.services';
 import { TourneeModel } from '../models/tournee.model';
+import { QRCodeScreen } from './QRCodeScreen';
 
 const StackNavigator = stackNavigatorFactory();
 
@@ -26,14 +27,20 @@ export const MainStack = () => {
                 }}
             >
                 <StackNavigator.Screen
-                    name="Tournee"
+                    name="HomeScreen"
                     component={HomeScreen}
                 />
 
                 <StackNavigator.Screen
-                    name="Details"
+                    name="DetailsTourneeScreen"
                     component={DetailsTourneeScreen}
                 />
+               <StackNavigator.Screen
+                    name="QRCodeScreen"
+                    component={QRCodeScreen}
+                />
+ 
+                
             </StackNavigator.Navigator>
         </BaseNavigationContainer>
     )

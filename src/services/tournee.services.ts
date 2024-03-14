@@ -25,7 +25,7 @@ class _TourneeService {
 
     async getTourneeDetails(id: number ): Promise<TourneeModelDetails>{
 
-        const donnee = {tournee_id: id, semaine: 1}
+        const donnee = {tournee_id: id, semaine: 9}
         const response = await fetch("https://ytpaqpikqarnveticqhl.supabase.co/functions/v1/tournees",{
             method: "POST",
             headers: {
