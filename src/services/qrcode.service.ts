@@ -1,34 +1,54 @@
 import * as fs from "@nativescript/core/file-system";
+import { BarcodeScanner } from "nativescript-barcodescanner";
 
 
 class _QRCodeService {
     async readQRCodeFromCamera(image: string): Promise<string | null> {
         try {
-            const imagePath = fs.path.join(fs.knownFolders.temp().path, `camera_temp.jpg`);
-            image.saveToFile(imagePath, "jpeg");
-
-            const apiUrl = `http://api.qrserver.com/v1/read-qr-code/`;
-            const formData = new FormData();
-            formData.append("file", fs.File.fromPath(imagePath).readSync(), "camera.jpg");
-
-            const response = await fetch(apiUrl, {
+            const response = await fetch('http://api.qrserver.com/v1/read-qr-code/', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: image,
             });
 
-            if (!response.ok) {
-                throw new Error(`Failed to read QR code: ${response.statusText}`);
-            }
-            const data = await response.json();
-            if (data && data.length > 0 && data[0].type === 'qrcode' && data[0].symbol && data[0].symbol.length > 0) {
-                return data[0].symbol[0].data;
-            } else {
-                return null;
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data[0] && data[0].symbol && data[0].symbol[0] && data[0].symbol[0].data) {
+                    return data[0].symbol[0].data;
+                }
             }
         } catch (error) {
             console.error('Error reading QR code:', error);
-            return null;
         }
+        return null;
+
+    }
+
+    function scanQRCode() {
+        const barcodescanner = new BarcodeScanner();
+    
+        barcodescanner.scan({
+            formats: "QR_CODE", // Seulement le format QR_CODE
+            message: "Scannez le code QR avec l'appareil photo", // Message affiché lors de l'utilisation de l'appareil photo
+            showFlipCameraButton: true, // Bouton pour changer de caméra
+            showTorchButton: true, // Bouton pour allumer/éteindre la lampe torche
+            torchOn: false, // Par défaut, la lampe torche est éteinte
+            orientation: "portrait", // Orientation de la caméra (portrait ou paysage)
+            resultDisplayDuration: 0, // Durée d'affichage du résultat (0 pour désactiver)
+            openSettingsIfPermissionWasPreviouslyDenied: true // Demande d'ouverture des paramètres si l'autorisation a été précédemment refusée
+        }).then((result) => {
+            // Succès du scan, affichage du résultat
+            alert({
+                title: "Résultat du scan",
+                message: "Format: " + result.format + ",\nValeur: " + result.text,
+                okButtonText: "OK"
+            });
+        }, (errorMessage) => {
+            // Échec du scan
+            console.log("Aucun scan. " + errorMessage);
+        });
     }
 }
 
